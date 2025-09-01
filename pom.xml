@@ -53,6 +53,11 @@
             <version>7.7.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <artifactId>lombok</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <scope>annotationProcessor</scope>
+        </dependency>
     </dependencies>
 
     <build>
