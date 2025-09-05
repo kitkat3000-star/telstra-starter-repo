@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SimActivationRequest {
+public class SimCard {
     private String iccid;
     private String customerEmail;
-
+    private Boolean active;
 }

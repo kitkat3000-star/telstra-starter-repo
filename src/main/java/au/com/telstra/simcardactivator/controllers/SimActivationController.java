@@ -1,41 +1,49 @@
 package au.com.telstra.simcardactivator.controllers;
 
-import au.com.telstra.simcardactivator.dtos.ActuatorResponse;
-import au.com.telstra.simcardactivator.dtos.SimActivationRequest;
+import au.com.telstra.simcardactivator.dtos.SimCard;
+import au.com.telstra.simcardactivator.mappers.SimCardMapper;
+import au.com.telstra.simcardactivator.repositories.SimCardRecordRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/sim")
 public class SimActivationController {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final SimActuatorHandler simActuatorHandler;
+    private final SimCardRecordRepository simCardRecordRepository;
+    private final SimCardMapper simCardMapper;
 
     @PostMapping("/activate")
-    public ResponseEntity<String> activateSim(@RequestBody SimActivationRequest request) {
-        // Prepare payload for actuator
-        Map<String, String> actuatorPayload = new HashMap<>();
-        actuatorPayload.put("iccid", request.getIccid());
+    public ResponseEntity<String> ActivateSim(@RequestBody SimCard simCard) {
+        var response = simActuatorHandler.actuate(simCard);
+        System.out.println(response);
 
-        // Send POST to actuator
-        ResponseEntity<ActuatorResponse> response = restTemplate.postForEntity(
-                "http://localhost:8444/actuate",
-                actuatorPayload,
-                ActuatorResponse.class
-        );
+        var simCardRecord = simCardMapper.toEntity(simCard);
+        simCardRecord.setActive(response.isSuccess());
 
-        boolean success = Objects.requireNonNull(response.getBody()).isSuccess();
-        System.out.println("Activation result: " + success);
+        simCardRecordRepository.save(simCardRecord);
 
-        return ResponseEntity.ok("Activation " + (success ? "successful" : "failed"));
+        return ResponseEntity.ok("Activation Result " + response.isSuccess());
     }
+
+    @GetMapping("/query")
+    public ResponseEntity<SimCard> querySim(@RequestParam Long id){
+        var simCardRecord = simCardRecordRepository.findById(id).orElse(null);
+        if (simCardRecord == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var simcard = simCardMapper.toDto(simCardRecord);
+        if (simcard == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(simcard);
+    }
+
+
 }
 
