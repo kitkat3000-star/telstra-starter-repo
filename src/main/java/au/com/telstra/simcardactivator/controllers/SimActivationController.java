@@ -21,8 +21,8 @@ public class SimActivationController {
         var response = simActuatorHandler.actuate(simCard);
         System.out.println(response);
 
+        simCard.setActive(response.isSuccess());
         var simCardRecord = simCardMapper.toEntity(simCard);
-        simCardRecord.setActive(response.isSuccess());
 
         simCardRecordRepository.save(simCardRecord);
 
