@@ -17,9 +17,8 @@ public class SimActivationController {
     private final SimCardMapper simCardMapper;
 
     @PostMapping("/activate")
-    public ResponseEntity<String> ActivateSim(@RequestBody SimCard simCard) {
+    public ResponseEntity<String> activateSim(@RequestBody SimCard simCard) {
         var response = simActuatorHandler.actuate(simCard);
-        System.out.println(response);
 
         simCard.setActive(response.isSuccess());
         var simCardRecord = simCardMapper.toEntity(simCard);

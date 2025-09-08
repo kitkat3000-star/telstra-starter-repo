@@ -43,13 +43,13 @@ public class SimCardActivatorStepDefinitions {
 
     @Then("the sim card should be activated successfully and its status recorded in the database")
     public void theSimCardShouldBeActivatedSuccessfullyAndItsStatusRecordedInTheDatabase() {
-        var simCard = restTemplate.getForObject("http://localhost:8080/sim/query?id={id}", SimCard.class, 1);
-        assertTrue(simCard.getActive());
+        var simCard1 = restTemplate.getForObject("http://localhost:8080/sim/query?id={id}", SimCard.class, 1);
+        assertTrue(simCard1.getActive());
     }
 
     @Then("the activation should fail and its status recorded in the database")
     public void theActivationShouldFailAndItsStatusRecordedInTheDatabase() {
-        var simCard = restTemplate.getForObject("http://localhost:8080/sim/query?id={id}", SimCard.class, 2);
-        assertFalse(simCard.getActive());
+        var simCard2 = restTemplate.getForObject("http://localhost:8080/sim/query?id={id}", SimCard.class, 2);
+        assertFalse(simCard2.getActive());
     }
 }
