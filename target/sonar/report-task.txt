@@ -1,0 +1,6 @@
+projectKey=telstra-starter-repo
+serverUrl=http://localhost:9002
+serverVersion=25.9.0.112764
+dashboardUrl=http://localhost:9002/dashboard?id=telstra-starter-repo
+ceTaskId=4e6d7424-aad1-4c5c-b4fd-fb484565b7fc
+ceTaskUrl=http://localhost:9002/api/ce/task?id=4e6d7424-aad1-4c5c-b4fd-fb484565b7fc
